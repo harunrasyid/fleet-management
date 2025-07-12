@@ -23,20 +23,22 @@ export const VehicleCard = ({
         containerStyles,
       )}
     >
-      {/* Label & Updated At*/}
+      {/* Label & Updated At */}
       <HStack className={"w-full justify-between"}>
-        <h2 className="font-bold text-3xl">Vehicle ${label}</h2>
-        <h3 className="font-semibold text-md text-gray-500">{`${formatDate(updated_at)}`}</h3>
+        <h2 className="font-bold text-3xl">Vehicle {label}</h2>
+        <h3 className="font-semibold text-md text-gray-500">{`${formatDate(updated_at, "HH:mm")}`}</h3>
       </HStack>
 
       {/* Speed & Occupancy */}
       <HStack className={"w-full justify-between mb-4"}>
         <InformationItem title={`Speed:`}>
-          <span className="font-semibold text-2xl">{`${speed} km/h`}</span>
+          <span className="font-semibold text-2xl">
+            {speed ? `${speed} km/h` : "-"}
+          </span>
         </InformationItem>
 
         <InformationItem title={`Occupancy:`}>
-          <span className="font-semibold text-2xl">{`${occupancy_status}`}</span>
+          <span className="font-semibold text-2xl">{`${occupancy_status ?? "-"}`}</span>
         </InformationItem>
       </HStack>
 
