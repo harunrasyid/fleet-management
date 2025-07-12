@@ -1,17 +1,26 @@
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { ClipLoader } from "react-spinners";
-import {
-  HStack,
-  type IModalProps,
-  InformationItem,
-  VStack,
-} from "@/components";
+import { HStack, InformationItem, VStack } from "@/components";
+import type { IModalProps } from "./Modal.props";
+import { formatDate } from "@/utils";
 
 export const Modal = ({
+  // Modal related
   isShow,
   closeModal,
   isLoading = false,
+
+  //  Data related
+  vehicle,
 }: IModalProps) => {
+  if (!vehicle) {
+    return <></>;
+  }
+
+  const {
+    data: { attributes },
+  } = vehicle;
+
   return (
     <Dialog open={isShow} onClose={closeModal} className="relative z-50">
       <div className="fixed inset-0 flex w-screen items-center justify-center p-4 bg-black/50 text-black">
@@ -29,38 +38,56 @@ export const Modal = ({
                   Updated At
                 </h3>
                 <span className="font-semibold text-md">
-                  21 Nov 2025, 10:45
-                </span>{" "}
+                  {formatDate(attributes.updated_at, "dd MMM yyyy, HH:mm")}
+                </span>
               </VStack>
             </HStack>
 
             {/* Body */}
             <VStack className="gap-4">
               {/* Vehicle Label */}
-              <InformationItem title={"Vehicle Label"} data={"1234"} />
+              <InformationItem
+                title={"Vehicle Label"}
+                data={`${attributes.label}`}
+              />
 
               {/* Section 1 */}
               <HStack>
                 {/* Speed */}
-                <InformationItem title={"Speed"} data={"1234"} />
+                <InformationItem
+                  title={"Speed"}
+                  data={`${attributes.speed ?? "-"} km/h`}
+                />
 
                 {/* Occupancy */}
-                <InformationItem title={"Occupancy"} data={"1234"} />
+                <InformationItem
+                  title={"Occupancy"}
+                  data={`${attributes.occupancy_status ?? "-"}`}
+                />
               </HStack>
 
               {/* Section 2 */}
               <HStack>
                 {/* Current Status */}
-                <InformationItem title={"Current Status"} data={"1234"} />
+                <InformationItem
+                  title={"Current Status"}
+                  data={`${attributes.current_status ?? "-"}`}
+                />
 
                 {/* Current Stop */}
-                <InformationItem title={"Current Stop"} data={"1234"} />
+                <InformationItem
+                  title={"Current Stop"}
+                  data={`${attributes.current_stop_sequence ?? "-"}`}
+                />
               </HStack>
 
               {/* Section 3 */}
               <HStack>
                 {/* Latitude, longitude */}
-                <InformationItem title={"Latitude, Longitude"} data={"1234"} />
+                <InformationItem
+                  title={"Latitude, Longitude"}
+                  data={`${(attributes.latitude, attributes.longitude)}`}
+                />
               </HStack>
 
               {/* Route */}
@@ -78,7 +105,7 @@ export const Modal = ({
               </HStack>
 
               {/* Trips */}
-              <h3 className="font-semibold text-lg mt-4">Route</h3>
+              <h3 className="font-semibold text-lg mt-4">Trip</h3>
               <HStack>
                 {/* Block ID */}
                 <InformationItem title={"Block ID"} data={"1234"} />
