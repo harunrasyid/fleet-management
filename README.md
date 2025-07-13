@@ -15,7 +15,7 @@ Frontend application to manage and monitor vehicles using live data from the MBT
 
 ## 📸 Demo
 
-> ℹ️ [Link to Live Deployment](https://your-deployment-url.com)
+> ℹ️ [Link to Live Deployment](https://fleet-management.pages.dev/)
 
 ---
 
