@@ -13,6 +13,8 @@ function App() {
   const {
     vehicles,
     vehicle,
+    trips,
+    routes,
     handleVehicleCardClick,
     paginationProps,
     loading,
@@ -68,8 +70,8 @@ function App() {
               <VehicleCard
                 key={`${index}-vehicle-card`}
                 onClick={() => {
-                  openModal();
                   handleVehicleCardClick(vehicle.id);
+                  openModal();
                 }}
                 {...vehicle.attributes}
               />
@@ -87,7 +89,13 @@ function App() {
       <Pagination {...paginationProps} />
 
       {/* Detail Modal */}
-      <Modal isLoading={loadingDetail} vehicle={vehicle} {...modal} />
+      <Modal
+        isLoading={loadingDetail}
+        vehicle={vehicle}
+        trips={trips}
+        routes={routes}
+        {...modal}
+      />
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { HStack } from "@/components";
 import { PAGINATION_OPTIONS } from "@/constants";
 import type { IPaginationProps } from "./Pagination.props";
 import type { IOption } from "@/types";
+import { ClipLoader } from "react-spinners";
 
 export const Pagination = ({
   onBackPress,
@@ -10,20 +11,25 @@ export const Pagination = ({
   information,
   limit,
   onLimitChange,
+  loading,
 }: IPaginationProps) => {
   return (
     <HStack className="w-full bg-gray-300 px-8 py-2 rounded-full justify-between">
       {/* Left */}
-      <HStack className="gap-4 items-center">
-        {/* Back */}
-        {onBackPress && <button onClick={onBackPress}>Back</button>}
+      {!loading ? (
+        <HStack className="gap-4 items-center">
+          {/* Back */}
+          {onBackPress && <button onClick={onBackPress}>Back</button>}
 
-        {/* Next */}
-        {onNextPress && <button onClick={onNextPress}>Next</button>}
+          {/* Next */}
+          {onNextPress && <button onClick={onNextPress}>Next</button>}
 
-        {/* Information */}
-        <span className="text-black">{information}</span>
-      </HStack>
+          {/* Information */}
+          <span className="text-black">{information}</span>
+        </HStack>
+      ) : (
+        <ClipLoader size={30} color="#3b82f6" />
+      )}
 
       {/* Right */}
       <HStack className="text-black items-center gap-4">

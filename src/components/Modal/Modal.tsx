@@ -1,131 +1,153 @@
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { ClipLoader } from "react-spinners";
 import { HStack, InformationItem, VStack } from "@/components";
-import type { IModalProps } from "./Modal.props";
 import { formatDate } from "@/utils";
+import type { IModalProps } from "./Modal.props";
 
 export const Modal = ({
-  // Modal related
   isShow,
   closeModal,
   isLoading = false,
-
-  //  Data related
   vehicle,
+  trips,
+  routes,
 }: IModalProps) => {
-  if (!vehicle) {
-    return <></>;
-  }
+  if (!vehicle) return null;
 
   const {
     data: { attributes },
   } = vehicle;
+  const routeAttributes = routes?.data?.attributes;
+  const tripAttributes = trips?.data?.attributes;
 
   return (
     <Dialog open={isShow} onClose={closeModal} className="relative z-50">
-      <div className="fixed inset-0 flex w-screen items-center justify-center p-4 bg-black/50 text-black">
+      <div className="fixed inset-0 flex items-center justify-center w-screen p-4 bg-black/50 text-black">
         {isLoading ? (
           <ClipLoader size={30} color="#3b82f6" />
         ) : (
-          <DialogPanel className="w-3xl space-y-4 bg-white p-8 rounded-md gap-4">
-            <HStack className={"w-full justify-between"}>
-              {/* Title */}
-              <DialogTitle className="font-bold">Vehicle Details</DialogTitle>
-
-              {/* Last Update */}
+          <DialogPanel className="w-3xl bg-white p-8 rounded-md space-y-6">
+            {/* Header */}
+            <HStack className="justify-between w-full">
+              <DialogTitle className="font-bold text-lg">
+                Vehicle Details
+              </DialogTitle>
               <VStack>
-                <h3 className="font-normal text-sm text-gray-500">
-                  Updated At
-                </h3>
-                <span className="font-semibold text-md">
+                <span className="text-sm text-gray-500">Updated At</span>
+                <span className="text-md font-semibold">
                   {formatDate(attributes.updated_at, "dd MMM yyyy, HH:mm")}
                 </span>
               </VStack>
             </HStack>
 
-            {/* Body */}
+            {/* Vehicle Info */}
             <VStack className="gap-4">
-              {/* Vehicle Label */}
-              <InformationItem
-                title={"Vehicle Label"}
-                data={`${attributes.label}`}
-              />
+              <InformationItem title="Vehicle Label" data={attributes.label} />
 
-              {/* Section 1 */}
               <HStack>
-                {/* Speed */}
                 <InformationItem
-                  title={"Speed"}
-                  data={`${attributes.speed ?? "-"} km/h`}
+                  title="Speed"
+                  data={
+                    attributes.speed != null ? `${attributes.speed} km/h` : "-"
+                  }
                 />
-
-                {/* Occupancy */}
                 <InformationItem
-                  title={"Occupancy"}
-                  data={`${attributes.occupancy_status ?? "-"}`}
+                  title="Occupancy"
+                  data={attributes.occupancy_status ?? "-"}
                 />
               </HStack>
 
-              {/* Section 2 */}
               <HStack>
-                {/* Current Status */}
                 <InformationItem
-                  title={"Current Status"}
-                  data={`${attributes.current_status ?? "-"}`}
+                  title="Current Status"
+                  data={attributes.current_status ?? "-"}
                 />
-
-                {/* Current Stop */}
                 <InformationItem
-                  title={"Current Stop"}
+                  title="Current Stop"
                   data={`${attributes.current_stop_sequence ?? "-"}`}
                 />
               </HStack>
 
-              {/* Section 3 */}
               <HStack>
-                {/* Latitude, longitude */}
                 <InformationItem
-                  title={"Latitude, Longitude"}
-                  data={`${(attributes.latitude, attributes.longitude)}`}
+                  title="Latitude, Longitude"
+                  data={`${attributes.latitude}, ${attributes.longitude}`}
                 />
-              </HStack>
-
-              {/* Route */}
-              <h3 className="font-semibold text-lg mt-4">Route</h3>
-              <HStack>
-                {/* Route Name */}
-                <InformationItem title={"Route Name"} data={"1234"} />
-
-                {/* Fare Class */}
-                <InformationItem title={"Fare Class"} data={"1234"} />
-              </HStack>
-              <HStack>
-                {/* Description */}
-                <InformationItem title={"Description"} data={"1234"} />
-              </HStack>
-
-              {/* Trips */}
-              <h3 className="font-semibold text-lg mt-4">Trip</h3>
-              <HStack>
-                {/* Block ID */}
-                <InformationItem title={"Block ID"} data={"1234"} />
-
-                {/* Headsign */}
-                <InformationItem title={"Headsign"} data={"1234"} />
-              </HStack>
-              <HStack>
-                {/* Wheelchair */}
-                <InformationItem
-                  title={"Wheelchair Accessible"}
-                  data={"1234"}
-                />
-
-                {/* Current Status */}
-                <InformationItem title={"Bike Allowed"} data={"1234"} />
               </HStack>
             </VStack>
 
-            <button className="text-white mt-4" onClick={closeModal}>
+            {/* Route Info */}
+            {routeAttributes && (
+              <>
+                <h3 className="mt-4 font-semibold text-lg">Route</h3>
+                <VStack className="gap-4">
+                  <HStack>
+                    <InformationItem
+                      title="Route Name"
+                      data={`${routeAttributes.long_name} - ${routeAttributes.short_name}`}
+                    />
+                    <InformationItem
+                      title="Fare Class"
+                      data={routeAttributes.fare_class}
+                    />
+                  </HStack>
+                  <HStack>
+                    <InformationItem
+                      title="Description"
+                      data={routeAttributes.description}
+                    />
+                  </HStack>
+                </VStack>
+              </>
+            )}
+
+            {/* Trip Info */}
+            {tripAttributes && (
+              <>
+                <h3 className="mt-4 font-semibold text-lg">Trip</h3>
+                <VStack className="gap-4">
+                  <HStack>
+                    <InformationItem
+                      title="Block ID"
+                      data={tripAttributes.block_id}
+                    />
+                    <InformationItem
+                      title="Headsign"
+                      data={tripAttributes.headsign}
+                    />
+                  </HStack>
+                  <HStack>
+                    <InformationItem
+                      title="Wheelchair Accessible"
+                      data={
+                        tripAttributes.wheelchair_accessible === 1
+                          ? "Yes"
+                          : tripAttributes.wheelchair_accessible === 2
+                            ? "No"
+                            : "No Data"
+                      }
+                    />
+                    <InformationItem
+                      title="Bike Allowed"
+                      data={
+                        tripAttributes.bikes_allowed === 1
+                          ? "Yes"
+                          : tripAttributes.bikes_allowed === 2
+                            ? "No"
+                            : "No Data"
+                      }
+                    />
+                  </HStack>
+                </VStack>
+              </>
+            )}
+
+            {/* Close Button */}
+            <button
+              type="button"
+              onClick={closeModal}
+              className="mt-4 text-white bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded"
+            >
               Close
             </button>
           </DialogPanel>

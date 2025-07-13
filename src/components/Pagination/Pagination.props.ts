@@ -6,4 +6,5 @@ export interface IPaginationProps {
   information: string;
   limit: IOption;
   onLimitChange: (newLimit: IOption) => void;
+  loading: boolean;
 }
