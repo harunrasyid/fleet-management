@@ -1,4 +1,4 @@
-import type { IVehicleDetail } from "@/types";
+import type { IRoutesDetail, ITripsDetail, IVehicleDetail } from "@/types";
 
 export interface IModalProps {
   // Modal related
@@ -8,4 +8,6 @@ export interface IModalProps {
 
   // Data
   vehicle: IVehicleDetail | undefined;
+  trips: ITripsDetail | undefined;
+  routes: IRoutesDetail | undefined;
 }
