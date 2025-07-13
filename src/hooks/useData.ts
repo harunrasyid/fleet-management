@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type {
+  IFilter,
   ILinks,
   IOption,
   IRoutesDetail,
@@ -33,6 +34,12 @@ export function useData() {
   const [trips, setTrips] = useState<ITripsDetail | undefined>();
   const [routes, setRoutes] = useState<IRoutesDetail | undefined>();
 
+  // Filter
+  const [filter, setFilter] = useState<IFilter>({
+    routes: [],
+    trips: [],
+  });
+
   // Loading
   const [loading, setLoading] = useState(false);
   const [loadingDetail, setLoadingDetail] = useState(false);
@@ -42,11 +49,13 @@ export function useData() {
     url?: string,
     limit?: number,
     offset?: number,
+    trip?: string[],
+    route?: string[],
   ) => {
     try {
       setLoading(true);
       setVehicles(undefined);
-      const result = await fetchVehicles(url, limit, offset);
+      const result = await fetchVehicles(url, limit, offset, trip, route);
       setVehicles(result);
     } catch (err) {
       handleError(err);
@@ -84,8 +93,14 @@ export function useData() {
 
   // Fetch vehicles on pagination change
   useEffect(() => {
-    fetchVehiclesList(undefined, limit.value as number, undefined);
-  }, [limit.value]);
+    fetchVehiclesList(
+      undefined,
+      limit.value as number,
+      undefined,
+      filter.trips.map((trip) => trip.value) as string[],
+      filter.routes.map((route) => route.value) as string[],
+    );
+  }, [filter.routes, filter.trips, limit.value]);
 
   // Fetch vehicle and related trip/route
   const handleVehicleCardClick = async (id: string) => {
@@ -163,12 +178,14 @@ export function useData() {
 
   const paginationProps = {
     limit,
-    onNextPress: vehicles?.links.next
-      ? () => fetchVehiclesList(vehicles?.links.next)
-      : undefined,
-    onBackPress: vehicles?.links.prev
-      ? () => fetchVehiclesList(vehicles?.links.prev)
-      : undefined,
+    onNextPress:
+      (vehicles?.links?.next ?? undefined)
+        ? () => fetchVehiclesList(vehicles?.links.next)
+        : undefined,
+    onBackPress:
+      (vehicles?.links?.prev ?? undefined)
+        ? () => fetchVehiclesList(vehicles?.links.prev)
+        : undefined,
     onLimitChange: setLimit,
     information,
     loading: loading,
@@ -179,6 +196,8 @@ export function useData() {
     vehicle,
     trips,
     routes,
+    filter,
+    setFilter,
     limit,
     setLimit,
     loading,

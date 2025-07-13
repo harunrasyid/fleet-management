@@ -5,8 +5,11 @@ import {
   VehicleCard,
   VStack,
 } from "@/components";
-import { useData, useModal } from "@/hooks";
+import { useData, useModal, useRoutes, useTrips } from "@/hooks";
+import { AsyncPaginate } from "react-select-async-paginate";
 import "./App.css";
+import { customStyles } from "@/constants";
+import { isEmptyList } from "@/utils";
 
 function App() {
   // Custom hooks
@@ -15,12 +18,16 @@ function App() {
     vehicle,
     trips,
     routes,
+    filter,
+    setFilter,
     handleVehicleCardClick,
     paginationProps,
     loading,
     loadingDetail,
   } = useData();
   const { openModal, ...modal } = useModal();
+  const { loadRouteOptions } = useRoutes();
+  const { loadTripOptions } = useTrips(filter);
 
   return (
     <div className="screen flex flex-col p-6 gap-8">
@@ -28,35 +35,36 @@ function App() {
       <h1 className="font-bold mb-6 text-center">Fleet Management</h1>
 
       {/* Filter Bar */}
-      {/*<div className={"flex gap-8"}>*/}
-      {/*  /!* Route *!/*/}
-      {/*  <Dropdown<OptionType>*/}
-      {/*    label={"Select Route(s)"}*/}
-      {/*    isMulti*/}
-      {/*    // @ts-expect-error: fix later*/}
-      {/*    loadFunction={() => {}}*/}
-      {/*    onChange={() => {}}*/}
-      {/*    onInputChange={() => {}}*/}
-      {/*    onMenuOpen={() => {}}*/}
-      {/*    onMenuClose={() => {}}*/}
-      {/*    value={value}*/}
-      {/*    loadOptions={() => {}}*/}
-      {/*  />*/}
+      <div className={"flex gap-8"}>
+        {/* Route */}
+        <div className={"flex flex-1 flex-col"}>
+          <label className="font-medium mb-1 block">Route(s) filter</label>
+          <AsyncPaginate
+            isMulti
+            value={filter.routes}
+            loadOptions={loadRouteOptions}
+            onChange={(newRoutes) =>
+              setFilter({ ...filter, routes: [...newRoutes] })
+            }
+            styles={customStyles}
+          />
+        </div>
 
-      {/*  /!* Trip *!/*/}
-      {/*  <Dropdown<OptionType>*/}
-      {/*    label={"Select Trip(s)"}*/}
-      {/*    isMulti*/}
-      {/*    // @ts-expect-error: fix later*/}
-      {/*    loadFunction={() => {}}*/}
-      {/*    onChange={() => {}}*/}
-      {/*    onInputChange={() => {}}*/}
-      {/*    onMenuOpen={() => {}}*/}
-      {/*    onMenuClose={() => {}}*/}
-      {/*    value={value}*/}
-      {/*    loadOptions={() => {}}*/}
-      {/*  />*/}
-      {/*</div>*/}
+        {/* Trip */}
+        <div className={"flex flex-1 flex-col"}>
+          <label className="font-medium mb-1 block">Trip(s) filter</label>
+          <AsyncPaginate
+            isDisabled={isEmptyList(filter.routes)}
+            isMulti
+            value={filter.trips}
+            loadOptions={loadTripOptions}
+            onChange={(newRoutes) =>
+              setFilter({ ...filter, trips: [...newRoutes] })
+            }
+            styles={customStyles}
+          />
+        </div>
+      </div>
 
       {/* Card List */}
       {loading ? (
